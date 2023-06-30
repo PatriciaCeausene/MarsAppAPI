@@ -18,17 +18,23 @@ export async function getRovers() {
     }
 }
 
-export async function getPhotosByRoverNameAndCameraType(roverName: string, cameraType: string) {
+export async function getPhotosByRoverNameAndCameraType(roverName: string, cameraType: string, startPage: number, endPage: number) {
     try {
         const {data} = await axios({
             method: 'get',
             url:`https://api.nasa.gov/mars-photos/api/v1/rovers/${roverName}/photos?sol=1000&camera=${cameraType}&api_key=lU32na6Cs8wNubrZP2H6bdGGxKgAFuwARwW79qm9`,
             responseType: "json"
         });
-
-        return data.photos.map((item: {img_src: string})=>{
-            return item.img_src;
-        });
+        if(startPage === 0 || endPage === 0) {
+            return data.photos.map((item: { img_src: string }) => {
+                return item.img_src;
+            });
+        } else {
+            return data.photos.map((item: { img_src: string }) => {
+                // TODO: check index
+                return item.img_src;
+            });
+        }
     } catch (error) {
         console.log(error);
     }

@@ -14,7 +14,16 @@ router.get('/test', (req:Request, res:Response) => res.send('Hello world !'));
 
 
 router.get('/rovers/:roverName/photos/:cameraType', async (req: Request, res: Response) => {
-    const response = await getPhotosByRoverNameAndCameraType(req.params["roverName"], req.params["cameraType"]);
+    let startPage = 0;
+    let endPage = 0;
+    if (req.query.start_page) {
+        startPage = parseInt(req.query.start_page.toString());
+    }
+    if (req.query.end_page) {
+        endPage = parseInt(req.query.end_page.toString());
+    }
+
+    const response = await getPhotosByRoverNameAndCameraType(req.params["roverName"], req.params["cameraType"],startPage,endPage);
     res.send(response);
 });
 
