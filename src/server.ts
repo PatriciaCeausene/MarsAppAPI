@@ -1,12 +1,16 @@
 
 import {Request, Response} from "express";
-import {getRovers, getPhotosByRoverNameAndCameraType} from './handleRequests';
+import {getRovers, getPhotosByRoverNameAndCameraType, getRoversNames, getAvailableCameras} from './handleRequests';
 
 const express = require("express");
 const app = express();
 const port = 8000;
 
+const cors = require("cors");
+
+
 app.use(express.json());
+app.use(cors());
 const router = express.Router();
 
 app.use('/', router);
@@ -27,8 +31,13 @@ router.get('/rovers/:roverName/photos/:cameraType', async (req: Request, res: Re
     res.send(response);
 });
 
+router.get('/rovers/:roverName/cameras', async (req: Request, res: Response) => {
+    const response = await getAvailableCameras(req.params["roverName"]);
+    res.send(response);
+});
+
 router.get('/rovers', async (req: Request, res: Response) => {
-    const response = await getRovers();
+    const response = await getRoversNames();
     res.send(response);
 });
 
