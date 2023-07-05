@@ -71,3 +71,26 @@ export async function getPhotosByRoverNameAndCameraType(roverName: string, camer
         console.log(error);
     }
 }
+
+export interface Photo {
+    img_src: string,
+    camera: string,
+    rover: string
+}
+export async function getPhotosByRoverNameAndEarthDate(roverName: string, earthDate: Date) {
+    try {
+        const {data} = await axios({
+            method: 'get',
+            url:`https://api.nasa.gov/mars-photos/api/v1/rovers/${roverName}/photos?earth_date=${earthDate}&api_key=lU32na6Cs8wNubrZP2H6bdGGxKgAFuwARwW79qm9`,
+            responseType: "json"
+        });
+
+        const res = data.photos.map((item: {img_src: string, rover: {name: string}, camera: { name: string}}) => {
+            return {img_src: item.img_src, rover: item.rover.name, camera: item.camera.name };
+        });
+        const array = res.filter((item: {}, i: number) => i === res.indexOf(item));
+        return array;
+    } catch (error) {
+        console.log(error);
+    }
+}

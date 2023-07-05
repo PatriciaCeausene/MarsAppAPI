@@ -1,12 +1,19 @@
 
 import {Request, Response} from "express";
-import {getRovers, getPhotosByRoverNameAndCameraType, getRoversNames, getAvailableCameras} from './handleRequests';
+import {
+    getRovers,
+    getPhotosByRoverNameAndCameraType,
+    getRoversNames,
+    getAvailableCameras,
+    getPhotosByRoverNameAndEarthDate
+} from './handleRequests';
 
 const express = require("express");
 const app = express();
 const port = 8000;
 
 const cors = require("cors");
+const moment = require('moment');
 
 
 app.use(express.json());
@@ -17,7 +24,7 @@ app.use('/', router);
 router.get('/test', (req:Request, res:Response) => res.send('Hello world !'));
 
 
-router.get('/rovers/:roverName/photos/:cameraType', async (req: Request, res: Response) => {
+router.get('/rovers/:roverName/photos/cameras/:cameraType', async (req: Request, res: Response) => {
     let startPage = 0;
     let endPage = 0;
     if (req.query.start_page) {
@@ -28,6 +35,12 @@ router.get('/rovers/:roverName/photos/:cameraType', async (req: Request, res: Re
     }
 
     const response = await getPhotosByRoverNameAndCameraType(req.params["roverName"], req.params["cameraType"],startPage,endPage);
+    res.send(response);
+});
+
+router.get('/rovers/:roverName/photos/:earthDate', async (req: Request, res: Response) => {
+    const date: Date = moment(req.params["earthDate"]).format("YYYY-MM-DD");
+    const response = await getPhotosByRoverNameAndEarthDate(req.params["roverName"], date);
     res.send(response);
 });
 
